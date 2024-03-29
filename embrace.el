@@ -721,6 +721,10 @@
 ;; ------------------- ;;
 ;; funcions & commands ;;
 ;; ------------------- ;;
+(defun embrace--expand-region-wrapper ()
+  (let ((expand-region-smart-cursor nil))
+    (er/expand-region 1)))
+
 (defun embrace-with-tag ()
   (let ((input (read-string "Tag: ")) tag rest)
     (when (string-match "\\([0-9a-z-]+\\)\\(.*?\\)[>]*$" input)
@@ -742,13 +746,13 @@
     (let ((expand-region-fast-keys-enabled nil))
       (save-excursion
         (when (looking-at open)
-          (er/expand-region 1))
+          (embrace--expand-region-wrapper))
         (while (and (not (= (point) (point-min)))
                     (not (and (looking-at open)
                               (save-excursion
                                 (goto-char (region-end))
                                 (looking-back close nil)))))
-          (er/expand-region 1))
+          (embrace--expand-region-wrapper))
         (when (not (and (looking-at open)
                         (save-excursion
                           (goto-char (region-end))
